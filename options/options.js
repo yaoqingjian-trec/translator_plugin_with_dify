@@ -244,20 +244,26 @@ class OptionsManager {
 
   // 保存设置
   async saveSettings() {
+    console.log('saveSettings:');
+    
     try {
       this.showLoading(true);
       
       const newSettings = this.collectSettings();
-      
+      console.log('saveSettings:', newSettings);
+      alert('saveSettings: ' + JSON.stringify(newSettings).substring(0, 100) + '...');
+
       // 验证设置
       if (!this.validateSettings(newSettings)) {
         return;
       }
 
+      console.log('收集的新设置:', newSettings);
       // 保存到存储
       await chrome.storage.sync.set({ translator_settings: newSettings });
       
       this.settings = newSettings;
+      console.log(this.settings);
       this.hasChanges = false;
       this.updateSaveButton();
       

@@ -246,6 +246,7 @@ class ApiManager {
     //   throw new Error('文本过长，请缩短后重试');
     // }
     console.log('this.settings', this.settings);
+    console.log(this.settings);
 
     // 检查API密钥
     if (this.settings.primaryApi === 'siliconflow' && !this.settings.siliconflowApiKey) {
@@ -518,14 +519,14 @@ ${text}`;
   // 语言检测功能已移除，由大语言模型自动识别
 
   // 更新设置
-  // async updateSettings(newSettings) {
-  //   console.log('更新设置，旧设置:', this.settings);
-  //   console.log('更新设置，新设置:', newSettings);
+  async updateSettings(newSettings) {
+    console.log('更新设置，旧设置:', this.settings);
+    console.log('更新设置，新设置:', newSettings);
 
-  //   this.settings = { ...this.settings, ...newSettings };
-  //   console.log('更新后的设置:', this.settings);
-  //   await chrome.storage.sync.set({ translator_settings: this.settings });
-  // }
+    this.settings = { ...this.settings, ...newSettings };
+    console.log('更新后的设置:', this.settings);
+    // await chrome.storage.sync.set({ translator_settings: this.settings });
+  }
 }
 
 // Background脚本
@@ -734,7 +735,14 @@ class BackgroundScript {
   // 处理存储变化
   handleStorageChange(changes, namespace) {
     console.log('存储变化:', changes, namespace);
+    const newSettings = changes.translator_settings.newValue;
+    console.log('检测到设置变化，正在更新后台设置...');
     
+    // 更新ApiManager中的设置
+    if (this.apiManager) {
+      this.apiManager.updateSettings(newSettings);
+    }
+
     // 通知所有标签页设置已更新
     if (changes.translator_settings) {
       this.broadcastToAllTabs({
