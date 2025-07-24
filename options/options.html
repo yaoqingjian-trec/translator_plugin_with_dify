@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能翻译选择器 - 设置</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="../assets/icons/icon48.png" alt="Logo" class="logo-icon">
+                    <div class="logo-text">
+                        <h1>智能翻译选择器</h1>
+                        <p>配置您的翻译设置</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-outline" id="exportBtn">导出设置</button>
+                    <button class="btn btn-outline" id="importBtn">导入设置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容 -->
+        <div class="main-content">
+            <div class="settings-nav">
+                <ul class="nav-tabs">
+                    <li class="nav-item">
+                        <a href="#general" class="nav-link active" data-tab="general">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            通用设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#api" class="nav-link" data-tab="api">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                            </svg>
+                            API设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#ui" class="nav-link" data-tab="ui">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            界面设置
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#advanced" class="nav-link" data-tab="advanced">
+                            <svg class="nav-icon" viewBox="0 0 24 24">
+                                <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                            </svg>
+                            高级设置
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="settings-content">
+                <!-- 通用设置 -->
+                <div class="tab-content" id="general">
+                    <div class="section">
+                        <h2 class="section-title">通用设置</h2>
+                        
+                        <div class="form-group">
+                            <label for="primaryApi">主要翻译API</label>
+                            <select id="primaryApi" class="form-control">
+                                <option value="siliconflow">硅基流动API</option>
+                                <option value="dify">Dify API</option>
+                            </select>
+                            <small class="form-text">选择主要使用的翻译API，另一个作为备用</small>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label for="targetLanguage">默认目标语言</label>
+                            <select id="targetLanguage" class="form-control">
+                                <option value="zh-CN">中文(简体)</option>
+                                <option value="zh-TW">中文(繁体)</option>
+                                <option value="en">英语</option>
+                                <option value="ja">日语</option>
+                                <option value="ko">韩语</option>
+                                <option value="fr">法语</option>
+                                <option value="de">德语</option>
+                                <option value="es">西班牙语</option>
+                                <option value="it">意大利语</option>
+                                <option value="pt">葡萄牙语</option>
+                                <option value="ru">俄语</option>
+                                <option value="ar">阿拉伯语</option>
+                                <option value="hi">印地语</option>
+                                <option value="th">泰语</option>
+                                <option value="vi">越南语</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableShortcut" class="checkbox">
+                                <span class="checkmark"></span>
+                                启用快捷键
+                            </label>
+                            <small class="form-text">使用 Ctrl+Shift+T 快速切换选择器</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableContextMenu" class="checkbox">
+                                <span class="checkmark"></span>
+                                启用右键菜单
+                            </label>
+                            <small class="form-text">在右键菜单中显示翻译选项</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableAutoTranslate" class="checkbox">
+                                <span class="checkmark"></span>
+                                自动翻译
+                            </label>
+                            <small class="form-text">选择元素后自动开始翻译</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="cacheResults" class="checkbox">
+                                <span class="checkmark"></span>
+                                缓存翻译结果
+                            </label>
+                            <small class="form-text">将翻译结果缓存到本地以提高性能</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API设置 -->
+                <div class="tab-content" id="api" style="display: none;">
+                    <div class="section">
+                        <h2 class="section-title">API设置</h2>
+                        
+                        <div class="api-section">
+                            <h3 class="subsection-title">
+                                <svg class="subsection-icon" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                </svg>
+                                硅基流动API
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="siliconflowApiKey">API密钥</label>
+                                <div class="input-group">
+                                    <input type="password" id="siliconflowApiKey" class="form-control" placeholder="请输入硅基流动API密钥">
+                                    <button class="btn btn-outline btn-sm" id="toggleSiliconflowKey">
+                                        <svg class="btn-icon" viewBox="0 0 24 24">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <small class="form-text">
+                                    <a href="https://siliconflow.cn" target="_blank">获取API密钥</a>
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="siliconflowModel">通义千问模型</label>
+                                <select id="siliconflowModel" class="form-control">
+                                    <option value="Qwen/Qwen2.5-7B-Instruct">通义千问2.5-7B (推荐)</option>
+                                    <option value="Qwen/Qwen2.5-14B-Instruct">通义千问2.5-14B</option>
+                                    <option value="Qwen/Qwen2.5-32B-Instruct">通义千问2.5-32B</option>
+                                    <option value="Qwen/Qwen2.5-72B-Instruct">通义千问2.5-72B</option>
+                                    <option value="Qwen/Qwen2.5-Math-72B-Instruct">通义千问2.5-Math-72B</option>
+                                    <option value="Qwen/QwQ-32B">通义千问QwQ-32B</option>
+                                    <option value="Qwen/Qwen3-8B">通义千问3-8B</option>
+                                    <option value="Qwen/Qwen3-14B">通义千问3-14B</option>
+                                    <option value="Qwen/Qwen3-32B">通义千问3-32B</option>
+                                    <option value="Qwen/QVQ-72B-Preview">通义千问QVQ-72B预览版</option>
+                                </select>
+                                <small class="form-text">
+                                    <strong>模型说明：</strong><br>
+                                    • <strong>Qwen2.5-7B</strong>：性价比最高，适合大多数翻译需求，支持免费调用<br>
+                                    • <strong>Qwen2.5-14B/32B/72B</strong>：更高性能，适合复杂文本翻译<br>
+                                    • <strong>Qwen2.5-Math-72B</strong>：专门优化数学能力的模型<br>
+                                    • <strong>QwQ-32B</strong>：推理能力强化的模型<br>
+                                    • <strong>Qwen3系列</strong>：最新一代模型，性能更强
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <button class="btn btn-outline" id="testSiliconflowApi">
+                                    <svg class="btn-icon" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    测试连接
+                                </button>
+                                <div class="api-status" id="siliconflowStatus"></div>
+                            </div>
+                        </div>
+
+                        <div class="api-section">
+                            <h3 class="subsection-title">
+                                <svg class="subsection-icon" viewBox="0 0 24 24">
+                                    <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                                </svg>
+                                Dify API
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="difyApiKey">API密钥</label>
+                                <div class="input-group">
+                                    <input type="password" id="difyApiKey" class="form-control" placeholder="请输入Dify API密钥">
+                                    <button class="btn btn-outline btn-sm" id="toggleDifyKey">
+                                        <svg class="btn-icon" viewBox="0 0 24 24">
+                                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <small class="form-text">
+                                    <a href="https://dify.ai" target="_blank">获取API密钥</a>
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="difyBaseUrl">基础URL</label>
+                                <input type="url" id="difyBaseUrl" class="form-control" placeholder="https://api.dify.ai/v1">
+                                <small class="form-text">如果您使用的是自部署的Dify服务，请修改此URL</small>
+                            </div>
+
+                            <div class="form-group">
+                                <button class="btn btn-outline" id="testDifyApi">
+                                    <svg class="btn-icon" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    测试连接
+                                </button>
+                                <div class="api-status" id="difyStatus"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 界面设置 -->
+                <div class="tab-content" id="ui" style="display: none;">
+                    <div class="section">
+                        <h2 class="section-title">界面设置</h2>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showTooltip" class="checkbox">
+                                <span class="checkmark"></span>
+                                显示悬停提示
+                            </label>
+                            <small class="form-text">鼠标悬停在可选元素上时显示提示</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tooltipPosition">提示位置</label>
+                            <select id="tooltipPosition" class="form-control">
+                                <option value="auto">自动</option>
+                                <option value="top">上方</option>
+                                <option value="bottom">下方</option>
+                                <option value="left">左侧</option>
+                                <option value="right">右侧</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="highlightColor">高亮颜色</label>
+                            <div class="color-picker">
+                                <input type="color" id="highlightColor" class="color-input" value="#007bff">
+                                <span class="color-preview" id="colorPreview"></span>
+                            </div>
+                            <small class="form-text">选择元素高亮时的颜色</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="animationSpeed">动画速度</label>
+                            <select id="animationSpeed" class="form-control">
+                                <option value="fast">快速</option>
+                                <option value="normal">正常</option>
+                                <option value="slow">缓慢</option>
+                                <option value="none">无动画</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 高级设置 -->
+                <div class="tab-content" id="advanced" style="display: none;">
+                    <div class="section">
+                        <h2 class="section-title">高级设置</h2>
+                        
+                        <div class="form-group">
+                            <label for="minTextLength">最小文本长度</label>
+                            <input type="number" id="minTextLength" class="form-control" min="1" max="100" value="2">
+                            <small class="form-text">小于此长度的文本将被忽略</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxTextLength">最大文本长度</label>
+                            <input type="number" id="maxTextLength" class="form-control" min="100" max="10000" value="5000">
+                            <small class="form-text">超过此长度的文本将被截断</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requestTimeout">请求超时时间 (秒)</label>
+                            <input type="number" id="requestTimeout" class="form-control" min="5" max="60" value="30">
+                            <small class="form-text">API请求的超时时间</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="excludeElements">排除元素</label>
+                            <textarea id="excludeElements" class="form-control" rows="3" placeholder="script,style,noscript,meta,link"></textarea>
+                            <small class="form-text">不会被选择的HTML元素类型，用逗号分隔</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="debugMode" class="checkbox">
+                                <span class="checkmark"></span>
+                                调试模式
+                            </label>
+                            <small class="form-text">启用详细的控制台日志</small>
+                        </div>
+
+                        <div class="form-group">
+                            <h3 class="subsection-title">数据管理</h3>
+                            <div class="button-group">
+                                <button class="btn btn-outline" id="clearAllData">
+                                    <svg class="btn-icon" viewBox="0 0 24 24">
+                                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                                    </svg>
+                                    清空所有数据
+                                </button>
+                                <button class="btn btn-outline" id="resetSettings">
+                                    <svg class="btn-icon" viewBox="0 0 24 24">
+                                        <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.85 20 14.48 20 13c0-4.42-3.58-8-8-8z"/>
+                                    </svg>
+                                    重置设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>智能翻译选择器 v1.0.0</p>
+                    <p>类似影刀RPA的元素选择和翻译工具</p>
+                </div>
+                <div class="footer-actions">
+                    <button class="btn btn-primary" id="saveSettings">保存设置</button>
+                    <button class="btn btn-outline" id="cancelSettings">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <div class="loading-text">处理中...</div>
+        </div>
+    </div>
+
+    <!-- 导入文件输入 -->
+    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+    <script src="options.js"></script>
+</body>
+</html> 
