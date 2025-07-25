@@ -286,14 +286,17 @@ if (typeof window.TranslatorStorageManager === 'undefined') {
   window.TranslatorStorageManager = TranslatorStorageManager;
   
   // 为了向后兼容，保留旧名称的引用
-  window.StorageManager = TranslatorStorageManager;
+  // window.StorageManager = TranslatorStorageManager;
 }
 
 // 延迟创建TranslatorStorageManager实例
 function createStorageManager() {
-  if (typeof window !== 'undefined' && !window.storageManager) {
+  console.log('createStorageManager 开始');
+  console.log(window);
+  console.log(window.TranslatorStorageManager);
+  if (typeof window !== 'undefined' && !window.TranslatorStorageManagerInstance) {
     try {
-      window.storageManager = new window.TranslatorStorageManager();
+      window.TranslatorStorageManagerInstance = new window.TranslatorStorageManager();
       console.log('TranslatorStorageManager 实例已创建');
       return true;
     } catch (error) {
@@ -305,6 +308,7 @@ function createStorageManager() {
 }
 
 // 立即尝试创建，如果失败则延迟重试
+console.log('TranslatorStorageManager 实例创建开始');
 if (!createStorageManager()) {
   // 如果立即创建失败，等待一段时间后重试
   setTimeout(() => {

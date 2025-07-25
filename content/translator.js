@@ -3,7 +3,7 @@ if (typeof window.TranslatorEngine === 'undefined') {
   class TranslatorEngine {
     constructor() {
       this.constants = window.TRANSLATOR_CONSTANTS || {};
-      this.storageManager = window.storageManager || null;
+      this.storageManager = window.TranslatorStorageManagerInstance || null;
       this.uiOverlay = window.uiOverlay || null;
       
       this.settings = null;
@@ -22,7 +22,7 @@ if (typeof window.TranslatorEngine === 'undefined') {
       
       while (Date.now() - startTime < maxWait) {
         // 重新获取依赖组件的引用
-        this.storageManager = window.storageManager || this.storageManager;
+        this.storageManager = window.TranslatorStorageManagerInstance || this.storageManager;
         this.uiOverlay = window.uiOverlay || this.uiOverlay;
         
         if (this.storageManager && typeof this.storageManager.getSettings === 'function') {
@@ -59,6 +59,7 @@ if (typeof window.TranslatorEngine === 'undefined') {
 
     // 翻译文本
     async translateText(text, targetLanguage = null) {
+      console.log('translateText', text, targetLanguage);
       if (!text || text.trim().length === 0) {
         throw new Error('文本内容为空');
       }
@@ -98,6 +99,7 @@ if (typeof window.TranslatorEngine === 'undefined') {
         }
 
         const result = response.data;
+        console.log('translateText result', result);
         
         // 缓存结果
         if (settings.cacheResults) {

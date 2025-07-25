@@ -31,7 +31,7 @@ class ApiManager {
       siliconflowModel: 'Qwen/Qwen2.5-7B-Instruct',
       difyApiKey: '',
       difyBaseUrl: 'https://api.dify.ai/v1',
-  
+
       targetLanguage: 'zh-CN',
       timeout: 30000,
       retryCount: 3,
@@ -63,15 +63,15 @@ class ApiManager {
 
     const now = Date.now();
     const cutoff = now - limiter.timeWindow;
-    
+
     // 清理过期的请求记录
     limiter.requests = limiter.requests.filter(timestamp => timestamp > cutoff);
-    
+
     // 检查是否超过限制
     if (limiter.requests.length >= limiter.maxRequests) {
       return false;
     }
-    
+
     // 记录当前请求
     limiter.requests.push(now);
     return true;
@@ -114,16 +114,16 @@ class ApiManager {
   // 测试API连接
   async testApi(apiType, apiKey, baseUrl = null, selectedModel = null) {
     console.log(`开始测试 ${apiType} API，密钥: ${apiKey ? apiKey.substring(0, 8) + '...' : '空'}`);
-    
+
     try {
       let result;
       const testTimeout = 20000; // 测试使用20秒超时，给网络更多时间
-      
+
       // 简单的网络连接检查
       console.log('检查网络连接...');
       try {
-        await fetch('https://www.google.com/favicon.ico', { 
-          method: 'HEAD', 
+        await fetch('https://www.google.com/favicon.ico', {
+          method: 'HEAD',
           mode: 'no-cors',
           cache: 'no-cache'
         });
@@ -131,17 +131,17 @@ class ApiManager {
       } catch (networkError) {
         console.warn('网络连接检查失败:', networkError);
       }
-      
+
       if (apiType === 'siliconflow') {
         // 使用传递的模型参数，如果没有则使用默认值
         const modelToUse = selectedModel || this.settings?.siliconflowModel || 'Qwen/Qwen2.5-7B-Instruct';
         console.log(`调用硅基流动API，使用模型: ${modelToUse}`);
-        
+
         // 验证API密钥格式（硅基流动通常以sk-开头）
         if (!apiKey.startsWith('sk-')) {
           console.warn('硅基流动API密钥格式可能有误，通常以sk-开头');
         }
-        
+
         const response = await this.makeRequest('https://api.siliconflow.cn/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -161,14 +161,14 @@ class ApiManager {
             max_tokens: 100
           })
         }, testTimeout);
-        
+
         if (!response.choices || !response.choices[0] || !response.choices[0].message) {
           throw new Error('API响应格式错误');
         }
-        
+
         result = response.choices[0].message.content;
         console.log('硅基流动API测试成功，响应:', result);
-        
+
       } else if (apiType === 'dify') {
         console.log('调用Dify API...');
         const response = await this.makeRequest(`${baseUrl || this.settings?.difyBaseUrl || 'https://api.dify.ai/v1'}/chat-messages`, {
@@ -184,26 +184,26 @@ class ApiManager {
             response_mode: 'blocking'
           })
         }, testTimeout);
-        
+
         if (!response.answer) {
           throw new Error('API响应格式错误');
         }
-        
+
         result = response.answer;
         console.log('Dify API测试成功，响应:', result);
       }
-      
+
       return {
         success: true,
         message: 'API测试成功',
         result: result
       };
-      
+
     } catch (error) {
       console.error(`${apiType} API测试失败:`, error);
-      
+
       let errorMessage = error.message;
-      
+
       // 提供更具体的错误信息
       if (error.message.includes('请求超时')) {
         errorMessage = '网络请求超时，请检查网络连接或稍后重试';
@@ -218,7 +218,7 @@ class ApiManager {
       } else if (error.message.includes('Failed to fetch')) {
         errorMessage = '网络连接失败，请检查网络设置';
       }
-      
+
       return {
         success: false,
         message: 'API测试失败',
@@ -232,7 +232,7 @@ class ApiManager {
     console.log('=== ApiManager.translateText 开始 ===');
     console.log('输入参数:', { text, targetLanguage, hasProgressCallback: !!onProgress });
     console.log('当前设置:', this.settings);
-    
+
     const target = targetLanguage || this.settings.targetLanguage;
 
     console.log('目标语言设置:', { target });
@@ -252,7 +252,7 @@ class ApiManager {
     if (this.settings.primaryApi === 'siliconflow' && !this.settings.siliconflowApiKey) {
       throw new Error('硅基流动API密钥未设置，请在设置页面配置');
     }
-    
+
     if (this.settings.primaryApi === 'dify' && !this.settings.difyApiKey) {
       throw new Error('Dify API密钥未设置，请在设置页面配置');
     }
@@ -269,7 +269,7 @@ class ApiManager {
       }
     } catch (error) {
       console.log('主要API调用失败，尝试备用API:', error);
-      
+
       // 降级到备用API
       try {
         if (this.settings.primaryApi === 'siliconflow') {
@@ -303,9 +303,9 @@ class ApiManager {
 
     const prompt = this.buildTranslationPrompt(text, targetLanguage);
     const selectedModel = this.settings?.siliconflowModel || 'Qwen/Qwen2.5-7B-Instruct';
-    
+
     console.log(`使用硅基流动API流式翻译，模型: ${selectedModel}`);
-    
+
     const requestData = {
       model: selectedModel,
       messages: [
@@ -353,7 +353,7 @@ class ApiManager {
     }
 
     const prompt = this.buildTranslationPrompt(text, targetLanguage);
-    
+
     const requestData = {
       inputs: {},
       query: prompt,
@@ -392,29 +392,29 @@ class ApiManager {
     try {
       while (true) {
         const { done, value } = await reader.read();
-        
+
         if (done) break;
-        
+
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split('\n');
-        
+
         for (const line of lines) {
           if (line.trim() === '') continue;
-          
+
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
-            
+
             if (data === '[DONE]') {
               break;
             }
-            
+
             try {
               const parsed = JSON.parse(data);
               const delta = parsed.choices?.[0]?.delta?.content;
-              
+
               if (delta) {
                 fullContent += delta;
-                
+
                 // 调用进度回调
                 if (onProgress) {
                   onProgress(fullContent, false);
@@ -426,68 +426,84 @@ class ApiManager {
           }
         }
       }
-      
+
       // 最终回调
       if (onProgress) {
         onProgress(fullContent, true);
       }
-      
+
       return fullContent.trim();
     } finally {
       reader.releaseLock();
     }
   }
 
-  // 处理Dify的流式响应
+  // 处理 Dify 的流式响应（更健壮）
   async handleDifyStreamResponse(response, onProgress) {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let fullContent = '';
+    let buffer = '';  // 关键点：跨 chunk 缓冲
 
     try {
       while (true) {
         const { done, value } = await reader.read();
-        
         if (done) break;
-        
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
-        
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // 拆成行
+        let lines = buffer.split('\n');
+        buffer = lines.pop(); // 保留最后一行（可能是不完整的）
+
         for (const line of lines) {
           if (line.trim() === '') continue;
-          
+
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
-            
+
             try {
               const parsed = JSON.parse(data);
-              
+
               if (parsed.event === 'message' && parsed.answer) {
                 fullContent += parsed.answer;
-                
-                // 调用进度回调
+
                 if (onProgress) {
                   onProgress(fullContent, false);
                 }
               } else if (parsed.event === 'message_end') {
-                // 流式结束
                 if (onProgress) {
                   onProgress(fullContent, true);
                 }
                 break;
               }
             } catch (e) {
-              console.warn('解析Dify流式数据失败:', e, data);
+              console.warn('解析 Dify 流式数据失败:', e, data);
             }
           }
         }
       }
-      
+
+      // 如果最后还有残留 buffer，尝试 parse（可选）
+      if (buffer.trim().startsWith('data: ')) {
+        const data = buffer.slice(6);
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.event === 'message' && parsed.answer) {
+            fullContent += parsed.answer;
+            if (onProgress) onProgress(fullContent, true);
+          }
+        } catch (e) {
+          console.warn('解析 Dify 流式数据失败（尾部）:', e, data);
+        }
+      }
+
       return fullContent.trim();
     } finally {
       reader.releaseLock();
     }
   }
+
 
   // 构建翻译提示词
   buildTranslationPrompt(text, targetLanguage) {
@@ -534,7 +550,7 @@ class BackgroundScript {
   constructor() {
     this.tabStates = new Map(); // 存储各个标签页的状态
     this.apiManager = null;
-    
+
     this.init();
   }
 
@@ -619,10 +635,10 @@ class BackgroundScript {
     try {
       // 创建API管理器实例
       this.apiManager = new ApiManager();
-      
+
       // 等待API管理器初始化完成
       await this.apiManager.init();
-      
+
       console.log('API管理器已成功初始化');
     } catch (error) {
       console.error('初始化API管理器失败:', error);
@@ -645,19 +661,19 @@ class BackgroundScript {
   // 处理快捷键命令
   async handleCommand(command) {
     console.log('快捷键命令:', command);
-    
+
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      
+
       if (!tab) return;
-      
+
       switch (command) {
         case 'toggle-selector':
           this.sendMessageToContentScript(tab.id, {
             type: 'TOGGLE_SELECTOR'
           });
           break;
-          
+
         default:
           console.log('未知快捷键命令:', command);
       }
@@ -669,44 +685,44 @@ class BackgroundScript {
   // 处理消息
   async handleMessage(request, sender, sendResponse) {
     console.log('收到消息:', request.type, sender.tab?.id);
-    
+
     try {
       switch (request.type) {
         case 'get_settings':
           const settings = await this.getSettings();
           sendResponse({ success: true, data: settings });
           break;
-          
+
         case 'update_settings':
           const saved = await this.saveSettings(request.data);
           sendResponse({ success: saved });
           break;
-          
+
         case 'translate_text':
           const result = await this.translateText(request.data, sender.tab?.id);
           sendResponse({ success: true, data: result });
           break;
-          
+
         case 'test_api':
           const testResult = await this.testApi(request.data);
           sendResponse({ success: true, data: testResult });
           break;
-          
+
         case 'set_status':
           this.setTabState(sender.tab?.id, request.data);
           sendResponse({ success: true });
           break;
-          
+
         case 'clear_cache':
           const cleared = await this.clearCache();
           sendResponse({ success: cleared });
           break;
-          
+
         case 'reopen_popup_with_result':
           await this.reopenPopupWithResult(request.data, sender.tab);
           sendResponse({ success: true });
           break;
-          
+
         default:
           console.log('未知消息类型:', request.type);
           sendResponse({ success: false, error: 'Unknown message type' });
@@ -737,7 +753,7 @@ class BackgroundScript {
     console.log('存储变化:', changes, namespace);
     const newSettings = changes.translator_settings.newValue;
     console.log('检测到设置变化，正在更新后台设置...');
-    
+
     // 更新ApiManager中的设置
     if (this.apiManager) {
       this.apiManager.updateSettings(newSettings);
@@ -755,18 +771,19 @@ class BackgroundScript {
   // 处理右键菜单点击
   async handleContextMenuClick(info, tab) {
     console.log('右键菜单点击:', info.menuItemId, tab.id);
-    
+    console.log('右键菜单点击:', info);
     switch (info.menuItemId) {
       case 'translate-selection':
+        console.log('translate-selection', info.selectionText);
         if (info.selectionText) {
           await this.translateSelection(info.selectionText, tab.id);
         }
         break;
-        
+
       case 'toggle-selector':
         await this.toggleSelector(tab.id);
         break;
-        
+
       case 'open-settings':
         await this.openSettings();
         break;
@@ -775,9 +792,10 @@ class BackgroundScript {
 
   // 翻译选中文本
   async translateSelection(text, tabId) {
+    console.log('translateSelection', text, tabId);
     try {
       await this.sendMessageToContentScript(tabId, {
-        type: 'TRANSLATE_TEXT',
+        type: 'translate_text',
         data: { text }
       });
     } catch (error) {
@@ -822,15 +840,15 @@ class BackgroundScript {
   async injectContentScript(tabId) {
     try {
       const tab = await chrome.tabs.get(tabId);
-      
+
       // 检查是否为支持的URL
       if (!tab.url.startsWith('http://') && !tab.url.startsWith('https://')) {
         return;
       }
-      
+
       // 注入脚本已经在manifest.json中定义，这里可以做额外的检查
       console.log('Content script已准备好注入标签页:', tabId);
-      
+
     } catch (error) {
       console.error('注入content script失败:', error);
     }
@@ -838,6 +856,7 @@ class BackgroundScript {
 
   // 发送消息到content script
   async sendMessageToContentScript(tabId, message) {
+    console.log('sendMessageToContentScript', tabId, message);
     try {
       const response = await chrome.tabs.sendMessage(tabId, message);
       return response;
@@ -851,7 +870,7 @@ class BackgroundScript {
   async broadcastToAllTabs(message) {
     try {
       const tabs = await chrome.tabs.query({});
-      
+
       for (const tab of tabs) {
         if (tab.url.startsWith('http://') || tab.url.startsWith('https://')) {
           try {
@@ -894,26 +913,26 @@ class BackgroundScript {
       console.log('=== Background脚本开始流式翻译 ===');
       console.log('翻译数据:', data);
       console.log('目标TabId:', tabId);
-      
+
       // 检查API管理器是否已初始化
       if (!this.apiManager) {
         console.error('API管理器未初始化');
         throw new Error('API管理器未初始化，请重新加载插件');
       }
-      
+
       console.log('API管理器已初始化');
-      
+
       // 检查API管理器的设置
       console.log('API管理器设置:', this.apiManager.settings);
-      
+
       // 创建流式进度回调
       const onProgress = (partialText, isComplete) => {
-        console.log('收到流式数据:', { 
-          partialTextLength: partialText.length, 
-          partialTextPreview: partialText.substring(0, 100) + '...', 
-          isComplete 
+        console.log('收到流式数据:', {
+          partialTextLength: partialText.length,
+          partialTextPreview: partialText.substring(0, 100) + '...',
+          isComplete
         });
-        
+
         // 向content script发送流式数据
         if (tabId) {
           try {
@@ -950,7 +969,7 @@ class BackgroundScript {
           }
         }
       };
-      
+
       // 调用API管理器进行实际翻译
       console.log('调用API管理器流式翻译方法...');
       const result = await this.apiManager.translateText(
@@ -958,7 +977,7 @@ class BackgroundScript {
         data.targetLanguage,
         onProgress
       );
-      
+
       console.log('翻译完成，结果:', result);
       return result;
     } catch (error) {
@@ -972,7 +991,7 @@ class BackgroundScript {
   async testApi(data) {
     try {
       const { apiType, apiKey, baseUrl, selectedModel } = data;
-      
+
       if (!apiKey || apiKey.trim() === '') {
         return {
           success: false,
@@ -983,7 +1002,7 @@ class BackgroundScript {
 
       // 调用API管理器进行实际测试
       const result = await this.apiManager.testApi(apiType, apiKey, baseUrl, selectedModel);
-      
+
       return {
         success: result.success,
         message: result.success ? `${apiType} API连接成功` : `${apiType} API连接失败`,
@@ -1002,7 +1021,7 @@ class BackgroundScript {
   // 设置标签页状态
   setTabState(tabId, state) {
     if (!tabId) return;
-    
+
     this.tabStates.set(tabId, {
       ...this.tabStates.get(tabId),
       ...state,
@@ -1030,7 +1049,7 @@ class BackgroundScript {
   async reopenPopupWithResult(translationResult, tab) {
     try {
       console.log('尝试重新打开popup，翻译结果:', translationResult);
-      
+
       // 尝试使用chrome.action.openPopup API (Chrome 99+)
       if (chrome.action && chrome.action.openPopup) {
         try {
@@ -1041,7 +1060,7 @@ class BackgroundScript {
           console.log('chrome.action.openPopup失败:', error);
         }
       }
-      
+
       // 如果无法直接打开popup，尝试其他方式
       // 1. 修改扩展图标提示用户
       if (chrome.action && chrome.action.setBadgeText) {
@@ -1049,12 +1068,12 @@ class BackgroundScript {
           text: '✓',
           tabId: tab?.id
         });
-        
+
         await chrome.action.setBadgeBackgroundColor({
           color: '#28a745',
           tabId: tab?.id
         });
-        
+
         // 5秒后清除badge
         setTimeout(() => {
           chrome.action.setBadgeText({
@@ -1063,10 +1082,10 @@ class BackgroundScript {
           });
         }, 5000);
       }
-      
+
       // 2. 可以考虑使用通知API（需要权限）
       console.log('已通过badge提示用户查看翻译结果');
-      
+
     } catch (error) {
       console.error('重新打开popup失败:', error);
     }

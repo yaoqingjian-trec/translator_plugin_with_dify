@@ -3,7 +3,7 @@ if (typeof window.TranslatorContentScript === 'undefined') {
   class TranslatorContentScript {
     constructor() {
       this.constants = window.TRANSLATOR_CONSTANTS || {};
-      this.storageManager = window.storageManager || null;
+      this.storageManager = window.TranslatorStorageManagerInstance || null;
       this.uiOverlay = window.uiOverlay || null;
       this.elementSelector = window.elementSelector || null;
       this.translator = window.translatorEngine || null;
@@ -29,7 +29,7 @@ if (typeof window.TranslatorContentScript === 'undefined') {
       this.bindEvents();
       
       // 创建右键菜单
-      this.createContextMenu();
+      // this.createContextMenu();//不要右键菜单了，直接翻译
       
       // 监听来自background的消息
       this.listenToBackgroundMessages();
@@ -50,7 +50,7 @@ if (typeof window.TranslatorContentScript === 'undefined') {
     while (Date.now() - startTime < maxWait) {
       // 重新获取依赖组件的引用
       this.constants = window.TRANSLATOR_CONSTANTS || this.constants;
-      this.storageManager = window.storageManager || this.storageManager;
+      this.storageManager = window.TranslatorStorageManagerInstance || this.storageManager;
       this.uiOverlay = window.uiOverlay || this.uiOverlay;
       this.elementSelector = window.elementSelector || this.elementSelector;
       this.translator = window.translatorEngine || this.translator;
@@ -262,11 +262,12 @@ if (typeof window.TranslatorContentScript === 'undefined') {
 
   // 处理来自background的消息
   async handleBackgroundMessage(request, sender, sendResponse) {
+    console.log('handleBackgroundMessage', request, sender, sendResponse);
     try {
       switch (request.type) {
         case this.constants.MESSAGE_TYPES.PING:
           // 重新获取组件引用
-          this.storageManager = window.storageManager || this.storageManager;
+          this.storageManager = window.TranslatorStorageManager || this.storageManager;
           this.uiOverlay = window.uiOverlay || this.uiOverlay;
           this.elementSelector = window.elementSelector || this.elementSelector;
           this.translator = window.translatorEngine || this.translator;
@@ -310,6 +311,10 @@ if (typeof window.TranslatorContentScript === 'undefined') {
           
         case this.constants.MESSAGE_TYPES.TRANSLATE_TEXT:
           const { text, element } = request.data;
+          console.log('translate_text', text, element);
+          // 1. 先弹出“正在翻译”面板
+          this.uiOverlay.showTranslationPanel(document.body, text, '', false, false);
+          // 2. 调用翻译
           await this.translator.translateText(text, element);
           sendResponse({ success: true });
           break;
@@ -397,7 +402,8 @@ if (typeof window.TranslatorContentScript === 'undefined') {
   async translateElement(element, text) {
     try {
       // 选中元素
-      this.uiOverlay.selectElement(element);
+      // this.uiOverlay.selectElement(element);
+      this.elementSelector.selectElement(element);
       
       // 显示翻译面板
       this.uiOverlay.showTranslationPanel(element, text);
@@ -550,7 +556,7 @@ function waitForDependenciesAndCreateContentScript() {
     attempts++;
     
     // 检查基础组件是否已加载
-    if (window.storageManager && window.uiOverlay && window.elementSelector && window.translatorEngine) {
+    if (window.TranslatorStorageManager && window.uiOverlay && window.elementSelector && window.translatorEngine) {
       if (createContentScript()) {
         console.log('TranslatorContentScript 创建成功，依赖检查完成');
         return;

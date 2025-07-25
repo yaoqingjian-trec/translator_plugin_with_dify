@@ -4,7 +4,7 @@ if (typeof window.TranslatorElementSelector === 'undefined') {
     constructor() {
       this.constants = window.TRANSLATOR_CONSTANTS || {};
       this.uiOverlay = window.uiOverlay || null;
-      this.storageManager = window.storageManager || null;
+      this.storageManager = window.TranslatorStorageManagerInstance || null;
 
       this.isActive = false;
       this.isSelecting = false;
@@ -30,7 +30,7 @@ if (typeof window.TranslatorElementSelector === 'undefined') {
 
       while (Date.now() - startTime < maxWait) {
         // 重新获取依赖组件的引用
-        this.storageManager = window.storageManager || this.storageManager;
+        this.storageManager = window.TranslatorStorageManagerInstance || this.storageManager;
         this.uiOverlay = window.uiOverlay || this.uiOverlay;
 
         if (this.storageManager && typeof this.storageManager.getSettings === 'function') {
@@ -414,6 +414,11 @@ if (typeof window.TranslatorElementSelector === 'undefined') {
       }
 
       return text;
+    }
+
+    // 为向后兼容提供别名方法
+    extractElementText(element) {
+      return this.extractTextFromElement(element);
     }
 
     // 获取元素描述
